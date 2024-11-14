@@ -1,5 +1,4 @@
 import tkinter as tk
-import webbrowser
 from tkinter import ttk
 from tkinter import messagebox
 from datetime import datetime
@@ -18,7 +17,9 @@ class PortfolioManagerGUI:
         self.create_menu()
         self.create_toolbar()
         self.create_main_frame()
-
+        self.dark_mode = False
+        self.style = ttk.Style()
+        self.create_styles()
 
         # Frame pentru lista de acțiuni
         self.frame_lista_actiuni = ttk.Frame(self.main_frame)
@@ -37,6 +38,10 @@ class PortfolioManagerGUI:
         # Creează bara de meniu
         self.menubar = tk.Menu(self.root)
         self.root.config(menu=self.menubar)
+
+        self.theme_menu = tk.Menu(self.menubar, tearoff= 0)
+        self.menubar.add_cascade(label= "Switch theme", menu= self.theme_menu)
+        self.theme_menu.add_command(label= "Switch theme", command= self.toggle_theme)
 
         # Meniu Acțiuni
         self.actiuni_menu = tk.Menu(self.menubar, tearoff=0)
@@ -59,10 +64,22 @@ class PortfolioManagerGUI:
         self.grafice_menu.add_command(label= "Grafic evolutie volum", command= self.show_evolutie_volum_actiuni)
         self.grafice_menu.add_command(label= "Grafi evolutie EMA", command= self.show_evolutie_ema)
 
+    def create_styles(self):
+        # Stiluri pentru light mode
+        self.style.configure("Light.TFrame", background="white")
+        self.style.configure("Light.TButton", background="lightgray", foreground="black")
+        self.style.configure("Light.TLabel", background="white", foreground="black")
+
+        # Stiluri pentru dark mode
+        self.style.configure("Dark.TFrame", background="black")
+        self.style.configure("Dark.TButton", background="gray60", foreground="black")  # Fundal gri deschis pentru vizibilitate
+        self.style.configure("Dark.TLabel", background="black", foreground="white")
+
     def create_toolbar(self):
         # Creează toolbar
-        self.toolbar = ttk.Frame(self.root)
+        self.toolbar = ttk.Frame(self.root, style= "Light.TFrame")
         self.toolbar.pack(side="top", fill="x")
+
 
         # Butoane toolbar
         ttk.Button(self.toolbar, text= "Adaugă", command= self.show_adauga_window).pack(side="left", padx=2, pady=2)
@@ -91,12 +108,35 @@ class PortfolioManagerGUI:
         ttk.Button(self.toolbar, text="Evoluție EMA", command=self.show_evolutie_ema).pack(side="left", padx=2,
                                                                                                         pady=2)
 
-
-
+        self.theme_button = ttk.Button(self.toolbar, text="Switch to Dark Mode", command=self.toggle_theme)
+        self.theme_button.pack(side="right", padx=2, pady=2)
 
     def create_main_frame(self):
-        self.main_frame = ttk.Frame(self.root)
+        self.main_frame = ttk.Frame(self.root, style="Light.TFrame")
         self.main_frame.pack(expand=True, fill="both", padx=5, pady=5)
+
+        # Etichetă exemplu pentru a testa schimbarea temei
+        self.label = ttk.Label(self.main_frame, text="Interfața aplicației", style="Light.TLabel")
+        self.label.pack(pady=10)
+
+
+    def toggle_theme(self):
+        self.dark_mode = not self.dark_mode
+        if self.dark_mode:
+            # Aplicați tema dark
+            self.root.config(bg="black")
+            self.main_frame.config(style="Dark.TFrame")
+            self.toolbar.config(style="Dark.TFrame")
+            self.theme_button.config(text="Switch to Light Mode", style="Dark.TButton")
+            self.label.config(foreground="white", background="black")
+        else:
+            # Aplicați tema light
+            self.root.config(bg="white")
+            self.main_frame.config(style="Light.TFrame")
+            self.toolbar.config(style="Light.TFrame")
+            self.theme_button.config(text="Switch to Dark Mode", style="Light.TButton")
+            self.label.config(foreground="black", background="white")
+
 
 
     def show_adauga_window(self):

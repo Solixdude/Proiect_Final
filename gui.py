@@ -174,8 +174,6 @@ class PortfolioManagerGUI:
                     widget.config(bg="white", fg="black", insertbackground="black")
 
 
-
-
     def show_adauga_window(self):
         window = tk.Toplevel(self.root)
         window.title("Adaugă Acțiune")

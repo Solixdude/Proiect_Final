@@ -62,16 +62,20 @@ class PortfolioManagerGUI:
         self.grafice_menu.add_command(label= "Grafic evolutie volum", command= self.show_evolutie_volum_actiuni)
         self.grafice_menu.add_command(label= "Grafi evolutie EMA", command= self.show_evolutie_ema)
 
+
     def create_styles(self):
         # Stiluri pentru light mode
         self.style.configure("Light.TFrame", background="white")
         self.style.configure("Light.TButton", background="lightgray", foreground="black")
         self.style.configure("Light.TLabel", background="white", foreground="black")
+        self.style.configure("Light.TEntry", fieldbackground="white", foreground="black")
 
         # Stiluri pentru dark mode
         self.style.configure("Dark.TFrame", background="black")
-        self.style.configure("Dark.TButton", background="gray60", foreground="black")  # Fundal gri deschis pentru vizibilitate
+        self.style.configure("Dark.TButton", background="gray60", foreground="black")
         self.style.configure("Dark.TLabel", background="black", foreground="white")
+        self.style.configure("Dark.TEntry", fieldbackground="black", foreground="white")
+
 
     def create_toolbar(self):
         # Creează toolbar
@@ -109,6 +113,7 @@ class PortfolioManagerGUI:
         self.theme_button = ttk.Button(self.toolbar, text="Switch to Dark Mode", command=self.toggle_theme)
         self.theme_button.pack(side="right", padx=2, pady=2)
 
+
     def create_main_frame(self):
         self.main_frame = ttk.Frame(self.root, style="Light.TFrame")
         self.main_frame.pack(expand=True, fill="both", padx=5, pady=5)
@@ -117,23 +122,57 @@ class PortfolioManagerGUI:
         self.label = ttk.Label(self.main_frame, text="Interfața aplicației", style="Light.TLabel")
         self.label.pack(pady=10)
 
-
     def toggle_theme(self):
         self.dark_mode = not self.dark_mode
+
+
         if self.dark_mode:
-            # Aplicați tema dark
+            # Setări pentru tema dark
             self.root.config(bg="black")
             self.main_frame.config(style="Dark.TFrame")
             self.toolbar.config(style="Dark.TFrame")
             self.theme_button.config(text="Switch to Light Mode", style="Dark.TButton")
-            self.label.config(foreground="white", background="black")
+
+            # Stiluri specifice pentru butoane
+            for widget in self.toolbar.winfo_children():
+                if isinstance(widget, ttk.Button):
+                    widget.config(style="Dark.TButton")
+
+            # Stiluri pentru toate etichetele și alte elemente
+            for widget in self.main_frame.winfo_children():
+                if isinstance(widget, ttk.Label):
+                    widget.config(style="Dark.TLabel")
+                elif isinstance(widget, ttk.Button):
+                    widget.config(style="Dark.TButton")
+                elif isinstance(widget, ttk.Entry):
+                    widget.config(style="Dark.TEntry")
+                elif isinstance(widget, tk.Text):
+                    widget.config(bg="black", fg="white", insertbackground="white")
+
+
         else:
-            # Aplicați tema light
+            # Setări pentru tema light
             self.root.config(bg="white")
             self.main_frame.config(style="Light.TFrame")
             self.toolbar.config(style="Light.TFrame")
             self.theme_button.config(text="Switch to Dark Mode", style="Light.TButton")
-            self.label.config(foreground="black", background="white")
+
+            # Stiluri specifice pentru butoane
+            for widget in self.toolbar.winfo_children():
+                if isinstance(widget, ttk.Button):
+                    widget.config(style="Light.TButton")
+
+            # Stiluri pentru toate etichetele și alte elemente
+            for widget in self.main_frame.winfo_children():
+                if isinstance(widget, ttk.Label):
+                    widget.config(style="Light.TLabel")
+                elif isinstance(widget, ttk.Button):
+                    widget.config(style="Light.TButton")
+                elif isinstance(widget, ttk.Entry):
+                    widget.config(style="Light.TEntry")
+                elif isinstance(widget, tk.Text):
+                    widget.config(bg="white", fg="black", insertbackground="black")
+
 
 
 

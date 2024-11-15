@@ -1,10 +1,11 @@
+import threading
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from datetime import datetime
 from actiuni import Actiuni
 from portofoliu import Portofoliu
-
+import webbrowser
 
 class PortfolioManagerGUI:
     def __init__(self, root):
@@ -39,14 +40,11 @@ class PortfolioManagerGUI:
         self.menubar = tk.Menu(self.root)
         self.root.config(menu=self.menubar)
 
-        self.theme_menu = tk.Menu(self.menubar, tearoff= 0)
-        self.menubar.add_cascade(label= "Switch theme", menu= self.theme_menu)
-        self.theme_menu.add_command(label= "Switch theme", command= self.toggle_theme)
 
         # Meniu Acțiuni
         self.actiuni_menu = tk.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="Acțiuni", menu=self.actiuni_menu)
-        self.actiuni_menu.add_command(label="Adaugă acțiune", command=self.show_adauga_window)
+        self.actiuni_menu.add_command(label="Adaugă acțiune", command=self.show_adauga_window, )
         self.actiuni_menu.add_command(label="Vinde acțiune", command=self.show_vinde_window)
         self.actiuni_menu.add_command(label="Actualizează acțiune", command=self.show_actualizeaza_window)
 
@@ -548,7 +546,6 @@ class PortfolioManagerGUI:
         self.stiri_text.config(state=tk.NORMAL)
         self.stiri_text.delete("1.0", tk.END)
 
-        # Verificăm dacă `stiri` este o listă de articole sau text simplu
         if isinstance(stiri, list):
             for articol in stiri:
                 titlu = articol.get("title", "Fără titlu")
@@ -562,17 +559,27 @@ class PortfolioManagerGUI:
                 self.stiri_text.insert(tk.END, f"Descriere: {descriere}\n", "descriere")
                 self.stiri_text.insert(tk.END, f"Link: {link}\n\n", "link")
 
-               
-            # Adăugăm stiluri
+                start_index = self.stiri_text.index(tk.END) + f"-{len(link) + 1}c"
+                end_index = self.stiri_text.index(tk.END)
+                self.stiri_text.tag_add(link, start_index, end_index)
+
+                # Eveniment de clic pentru link cu thread
+                self.stiri_text.tag_bind(
+                    link,
+                    "<Button-1>",
+                    lambda e, url=link: threading.Thread(target=webbrowser.open, args=(url,)).start()
+                )
+
+            # Stiluri
             self.stiri_text.tag_configure("titlu", font=("Arial", 12, "bold"), foreground="blue")
             self.stiri_text.tag_configure("data", font=("Arial", 10, "italic"))
             self.stiri_text.tag_configure("descriere", font=("Arial", 11))
             self.stiri_text.tag_configure("link", font=("Arial", 10, "underline"), foreground="blue")
         else:
-            # Dacă este text simplu
             self.stiri_text.insert(tk.END, stiri)
 
         self.stiri_text.config(state=tk.DISABLED)
+
 
 
 

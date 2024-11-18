@@ -37,3 +37,4 @@ def grafic_ema(date, pret_inchidere, ema_pe_termen_scurt, ema_pe_termen_lung, ti
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.show()
+

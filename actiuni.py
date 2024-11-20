@@ -227,10 +227,11 @@ class Actiuni:
         raport_plata = self.data.info.get('payoutRatio')
 
 
-        if randamentul_dividendelor is None:
-            return "Acțiunea nu are un randament al dividendelor disponibil sau nu plătește dividende."
-
         analiza = []
+
+        if randamentul_dividendelor is None:
+            analiza.append("Acțiunea nu are un randament al dividendelor disponibil sau nu plătește dividende.")
+
 
         # Analiza randamentul dividendelor
         if randamentul_dividendelor > 3:
